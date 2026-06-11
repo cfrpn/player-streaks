@@ -151,8 +151,20 @@
   </div>
 
   <script>
+    const DEPLOYMENT_DATE = new Date('2026-06-01');
+
     let allRows = [];
     let cols = [];
+
+    function adjustedStreakValue(row) {
+      const raw = Number(row['streak_value']);
+      const start = new Date(row['streak_start_date']);
+      if (!isNaN(start) && start < DEPLOYMENT_DATE) {
+        const diffDays = Math.floor((DEPLOYMENT_DATE - start) / 86400000);
+        return Math.max(0, raw - diffDays);
+      }
+      return raw;
+    }
 
     function renderRows(rows) {
       const tbody = document.getElementById('tbody');
@@ -160,9 +172,12 @@
         tbody.innerHTML = '<tr><td colspan="' + cols.length + '" style="text-align:center;color:#666;padding:2rem">No matching users</td></tr>';
         return;
       }
-      tbody.innerHTML = rows.map(row =>
-        '<tr>' + cols.map(c => `<td>${row[c] ?? ''}</td>`).join('') + '</tr>'
-      ).join('');
+      tbody.innerHTML = rows.map(row => {
+        return '<tr>' + cols.map(c => {
+          const val = c === 'streak_value' ? adjustedStreakValue(row) : (row[c] ?? '');
+          return `<td>${val}</td>`;
+        }).join('') + '</tr>';
+      }).join('');
     }
 
     function onSearch(e) {
