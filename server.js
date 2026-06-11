@@ -8,10 +8,15 @@ const {
   DATABRICKS_HOST,
   WAREHOUSE_ID,
   DATABRICKS_TOKEN,
-  QUERY,
   CACHE_TTL_SECONDS,
   PORT = '3000'
 } = process.env;
+
+const QUERY = `
+  SELECT *
+  FROM ruby_sweeps.gold.user_streaks
+  LIMIT 10
+`;
 
 const cacheTtlSeconds = Number(CACHE_TTL_SECONDS) || 60;
 const MAX_POLL_TRIES = 60;
@@ -25,7 +30,6 @@ function validateConfig() {
   if (!DATABRICKS_HOST) throw new Error('Missing DATABRICKS_HOST');
   if (!WAREHOUSE_ID) throw new Error('Missing WAREHOUSE_ID');
   if (!DATABRICKS_TOKEN) throw new Error('Missing DATABRICKS_TOKEN');
-  if (!QUERY) throw new Error('Missing QUERY');
 
   try {
     new URL(DATABRICKS_HOST);

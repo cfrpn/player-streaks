@@ -138,9 +138,7 @@
         const cols = Object.keys(rows[0]);
 
         theadEl.innerHTML = '<tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
-        tbodyEl.innerHTML = rows.map(row =>
-          '<tr>' + cols.map(c => `<td>${row[c] ?? ''}</td>`).join('') + '</tr>'
-        ).join('');
+        tbodyEl.innerHTML = '<tr>' + cols.map(c => `<td>${rows[0][c] ?? ''}</td>`).join('') + '</tr>';
 
         statusEl.style.display = 'none';
         tableEl.style.display = 'table';
